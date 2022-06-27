@@ -1,10 +1,10 @@
 import { ConnectButton, useAddRecentTransaction } from '@rainbow-me/rainbowkit';
 
-import React, { ComponentProps, useEffect, useState } from 'react';
+import React, { ComponentProps, useEffect, useRef, useState } from 'react';
 import {
   useAccount,
   useNetwork,
-  useSendTransaction,
+  useSigner,
   useSignMessage,
   useSignTypedData,
 } from 'wagmi';
@@ -13,6 +13,60 @@ type ConnectButtonProps = ComponentProps<typeof ConnectButton>;
 type ExtractString<Value> = Value extends string ? Value : never;
 type AccountStatus = ExtractString<ConnectButtonProps['accountStatus']>;
 type ChainStatus = ExtractString<ConnectButtonProps['chainStatus']>;
+
+function SendTransaction() {
+  const { data: signer } = useSigner();
+  const { data: accountData } = useAccount();
+  const { address } = accountData ?? {};
+
+  const [tx, setTx] = useState<Awaited<
+    ReturnType<NonNullable<typeof signer>['populateTransaction']>
+  > | null>(null);
+  const mountedRef = useRef(false);
+  useEffect(() => {
+    if (!signer) return;
+
+    if (mountedRef.current) return;
+    mountedRef.current = true;
+
+    const unpopulatedTx = {
+      to: address,
+      value: 0,
+    };
+
+    signer
+      .populateTransaction(unpopulatedTx)
+      .then(setTx)
+      .catch(() => {
+        setTx(unpopulatedTx);
+      });
+  }, [signer, address]);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div>
+        <button
+          disabled={!address || !tx || !signer}
+          onClick={() =>
+            tx &&
+            signer &&
+            // @ts-expect-error
+            (signer.sendUncheckedTransaction
+              ? // @ts-expect-error
+                signer.sendUncheckedTransaction({
+                  to: address,
+                  value: 0,
+                })
+              : signer.sendTransaction(tx))
+          }
+          type="button"
+        >
+          Send Transaction
+        </button>
+      </div>
+    </div>
+  );
+}
 
 const Example = () => {
   const { data: accountData } = useAccount();
@@ -36,17 +90,6 @@ const Example = () => {
   );
 
   const { activeChain } = useNetwork();
-
-  const {
-    data: transactionData,
-    error: transactionError,
-    sendTransaction,
-  } = useSendTransaction({
-    request: {
-      to: accountData?.address,
-      value: 0,
-    },
-  });
 
   const {
     data: signingData,
@@ -215,34 +258,35 @@ const Example = () => {
             <h3>
               Example Actions {!accountData && <span>(not connected)</span>}
             </h3>
-            <div style={{ display: 'flex', gap: 12, paddingBottom: 12 }}>
-              <button
-                disabled={!accountData}
-                onClick={() => sendTransaction()}
-                type="button"
-              >
-                Send Transaction
-              </button>
-              <button
-                disabled={!accountData}
-                onClick={() => signMessage()}
-                type="button"
-              >
-                Sign Message
-              </button>
-              <button
-                disabled={!accountData || activeChain?.id !== 1}
-                onClick={() => signTypedData()}
-                type="button"
-              >
-                Sign Typed Data
-              </button>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 12,
+                paddingBottom: 12,
+              }}
+            >
+              <SendTransaction />
+              <div>
+                <button
+                  disabled={!accountData}
+                  onClick={() => signMessage()}
+                  type="button"
+                >
+                  Sign Message
+                </button>
+              </div>
+              <div>
+                <button
+                  disabled={!accountData || activeChain?.id !== 1}
+                  onClick={() => signTypedData()}
+                  type="button"
+                >
+                  Sign Typed Data
+                </button>
+              </div>
             </div>
             <div>
-              {transactionData && (
-                <div>Transaction: {JSON.stringify(transactionData)}</div>
-              )}
-              {transactionError && <div>Error sending transaction</div>}
               {signingData && (
                 <div style={{ wordBreak: 'break-all' }}>
                   Data Signature: {signingData}
