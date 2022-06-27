@@ -216,6 +216,7 @@ export function ConnectButtonRenderer({
         chains={chains}
         networkError={networkError}
         onClose={closeChainModal}
+        onDisconnect={disconnect}
         onSwitchNetwork={switchNetwork}
         open={chainModalOpen}
       />
