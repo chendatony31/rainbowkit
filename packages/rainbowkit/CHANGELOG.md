@@ -1,5 +1,109 @@
 # @rainbow-me/rainbowkit
 
+## 1.0.6
+
+### Patch Changes
+
+- c251d55: Talisman Support
+
+  **Example usage**
+
+  ```ts
+  import {
+    getDefaultWallets,
+    connectorsForWallets,
+  } from '@rainbow-me/rainbowkit';
+  import { talismanWallet } from '@rainbow-me/rainbowkit/wallets';
+  const { wallets } = getDefaultWallets({ appName, chains });
+  const connectors = connectorsForWallets([
+    ...wallets,
+    {
+      groupName: 'Other',
+      wallets: [talismanWallet({ projectId, chains })],
+    },
+  ]);
+  ```
+
+- d5b3bd1: Safeheron Support
+
+  **Example usage**
+
+  ```ts
+  import {
+    getDefaultWallets,
+    connectorsForWallets,
+  } from '@rainbow-me/rainbowkit';
+  import { safeheronWallet } from '@rainbow-me/rainbowkit/wallets';
+  const { wallets } = getDefaultWallets({ appName, chains });
+  const connectors = connectorsForWallets([
+    ...wallets,
+    {
+      groupName: 'Other',
+      wallets: [safeheronWallet({ chains })],
+    },
+  ]);
+  ```
+
+- 66e8423: Frontier Wallet Support
+
+  **Example usage**
+
+  ```ts
+  import {
+    getDefaultWallets,
+    connectorsForWallets,
+  } from '@rainbow-me/rainbowkit';
+  import { frontierWallet } from '@rainbow-me/rainbowkit/wallets';
+  const { wallets } = getDefaultWallets({ appName, chains });
+  const connectors = connectorsForWallets([
+    ...wallets,
+    {
+      groupName: 'Other',
+      wallets: [frontierWallet({ projectId, chains })],
+    },
+  ]);
+  ```
+
+- 1b4f142: BitKeep Support
+
+  **Example usage**
+
+  ```ts
+  import {
+    getDefaultWallets,
+    connectorsForWallets,
+  } from '@rainbow-me/rainbowkit';
+  import { bitKeepWallet } from '@rainbow-me/rainbowkit/wallets';
+  const { wallets } = getDefaultWallets({ appName, projectId, chains });
+  const connectors = connectorsForWallets([
+    ...wallets,
+    {
+      groupName: 'Other',
+      wallets: [bitKeepWallet({ projectId, chains })],
+    },
+  ]);
+  ```
+
+- 9fe6be0: TokenPocket Support
+
+  **Example usage**
+
+  ```ts
+  import {
+    getDefaultWallets,
+    connectorsForWallets,
+  } from '@rainbow-me/rainbowkit';
+  import { tokenPocketWallet } from '@rainbow-me/rainbowkit/wallets';
+  const { wallets } = getDefaultWallets({ appName, projectId, chains });
+  const connectors = connectorsForWallets([
+    ...wallets,
+    {
+      groupName: 'Other',
+      wallets: [tokenPocketWallet({ projectId, chains })],
+    },
+  ]);
+  ```
+
 ## 1.0.5
 
 ### Patch Changes
