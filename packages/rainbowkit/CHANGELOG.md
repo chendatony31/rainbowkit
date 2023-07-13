@@ -1,5 +1,29 @@
 # @rainbow-me/rainbowkit
 
+## 1.0.6
+
+### Patch Changes
+
+- 9fe6be0: TokenPocket Support
+
+  **Example usage**
+
+  ```ts
+  import {
+    getDefaultWallets,
+    connectorsForWallets,
+  } from '@rainbow-me/rainbowkit';
+  import { tokenPocketWallet } from '@rainbow-me/rainbowkit/wallets';
+  const { wallets } = getDefaultWallets({ appName, projectId, chains });
+  const connectors = connectorsForWallets([
+    ...wallets,
+    {
+      groupName: 'Other',
+      wallets: [tokenPocketWallet({ projectId, chains })],
+    },
+  ]);
+  ```
+
 ## 1.0.5
 
 ### Patch Changes
